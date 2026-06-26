@@ -1,114 +1,151 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Facebook, Twitter, Linkedin, Instagram, Mail, MapPin, Phone, ArrowUp, Leaf } from 'lucide-react';
+import { Linkedin, Twitter, Facebook, Instagram, Mail, MapPin, Phone, ArrowUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { motion } from 'framer-motion';
+import { ecosystemLinks, navLinks } from '@/data/navigation.js';
 
 function Footer() {
-  const currentYear = new Date().getFullYear();
+  const year = new Date().getFullYear();
+  const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
 
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.1, delayChildren: 0.2 } }
-  };
-  
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 }
-  };
+  const footerLinks = [...ecosystemLinks, ...navLinks.slice(1)];
 
   return (
-    <footer className="bg-primary text-primary-foreground pt-24 pb-8 relative overflow-hidden">
-      {/* Decorative Background Elements */}
-      <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-accent/5 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-1/3 h-1/3 bg-secondary/10 rounded-full blur-[100px] pointer-events-none" />
+    <footer
+      className="pt-24 pb-8 relative overflow-hidden border-t border-white/6"
+      style={{ background: '#040f08', color: '#f0ece4' }}
+    >
+      {/* Liquid bg decorations */}
+      <div
+        className="liquid-blob absolute pointer-events-none"
+        style={{ width: '500px', height: '500px', background: 'radial-gradient(ellipse, rgba(74,222,128,0.05), transparent)', top: '-100px', right: '-100px' }}
+      />
+      <div
+        className="liquid-blob-alt absolute pointer-events-none"
+        style={{ width: '350px', height: '350px', background: 'radial-gradient(ellipse, rgba(200,168,75,0.04), transparent)', bottom: '-60px', left: '-60px' }}
+      />
 
-      <motion.div 
+      <motion.div
         className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10"
-        variants={containerVariants}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, margin: "-100px" }}
+        viewport={{ once: true, margin: '-100px' }}
+        variants={{ hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.08, delayChildren: 0.1 } } }}
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-8 mb-16 border-b border-primary-foreground/10 pb-16">
-          
-          <motion.div variants={itemVariants} className="lg:col-span-4 space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-8 mb-16 border-b border-white/6 pb-16">
+
+          {/* Brand */}
+          <motion.div
+            variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
+            className="lg:col-span-4 space-y-6"
+          >
             <Link to="/" className="flex items-center space-x-3">
-              <div className="bg-primary-foreground text-primary p-2 rounded-xl">
-                <Leaf className="h-6 w-6" />
+              <div
+                className="w-10 h-10 rounded-xl flex items-center justify-center font-serif font-black text-lg shadow-lg"
+                style={{ background: 'linear-gradient(135deg, #c8a84b, #f0d060, #a07820)', color: '#071a0e' }}
+              >
+                I
               </div>
-              <span className="text-2xl font-serif font-bold">IGO Group</span>
+              <div>
+                <div className="text-xl font-serif font-bold text-[#f0ece4]">IGO Group</div>
+                <div className="text-[10px] font-bold tracking-[3px] uppercase text-[#4ade80]">of Companies</div>
+              </div>
             </Link>
-            <p className="text-primary-foreground/70 leading-relaxed text-sm max-w-sm">
-              A diversified enterprise conglomerate shaping industries across agriculture, technology, healthcare, and sustainability for generational impact.
+            <p className="text-sm text-[#f0ece4]/45 leading-relaxed max-w-xs">
+              26 brands. 18 departments. 32 core managers. Shaping sustainable agriculture and enterprise across India and global markets.
             </p>
-            <div className="flex gap-3 pt-2">
-              {[Linkedin, Twitter, Facebook, Instagram].map((Icon, i) => (
-                <a key={i} href="#" className="w-10 h-10 rounded-full bg-primary-foreground/10 flex items-center justify-center hover:bg-secondary hover:text-secondary-foreground transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-secondary/20">
+            <div className="flex gap-3">
+              {[
+                { Icon: Linkedin, label: 'LinkedIn' },
+                { Icon: Twitter, label: 'Twitter' },
+                { Icon: Facebook, label: 'Facebook' },
+                { Icon: Instagram, label: 'Instagram' },
+              ].map(({ Icon, label }) => (
+                <a
+                  key={label}
+                  href="#"
+                  aria-label={label}
+                  className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
+                  style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
+                  onMouseEnter={e => { e.currentTarget.style.background = 'rgba(74,222,128,0.12)'; e.currentTarget.style.borderColor = 'rgba(74,222,128,0.3)'; e.currentTarget.style.color = '#4ade80'; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'; e.currentTarget.style.color = ''; }}
+                >
                   <Icon className="h-4 w-4" />
                 </a>
               ))}
             </div>
           </motion.div>
 
-          <motion.div variants={itemVariants} className="lg:col-span-2">
-            <h4 className="font-serif font-bold text-lg mb-6 tracking-wide">Ecosystem</h4>
+          {/* Links */}
+          <motion.div
+            variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
+            className="lg:col-span-2"
+          >
+            <h4 className="font-serif font-bold text-sm mb-6 uppercase tracking-[2px] text-[#c8a84b]">Navigate</h4>
             <nav className="flex flex-col space-y-3">
-              {[
-                { name: 'Our Brands', path: '/brands' },
-                { name: 'Departments', path: '/departments' },
-                { name: 'Leadership', path: '/team' },
-                { name: 'Sustainability', path: '/about' },
-                { name: 'Investors', path: '/contact' }
-              ].map((item, i) => (
-                <Link key={i} to={item.path} className="text-sm text-primary-foreground/70 hover:text-accent transition-colors w-fit flex items-center group">
-                  <span className="w-0 overflow-hidden group-hover:w-3 transition-all duration-300 text-accent">- </span>
+              {footerLinks.map((item) => (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  className="text-sm text-[#f0ece4]/45 hover:text-[#4ade80] transition-colors duration-200"
+                >
                   {item.name}
                 </Link>
               ))}
             </nav>
           </motion.div>
 
-          <motion.div variants={itemVariants} className="lg:col-span-3">
-            <h4 className="font-serif font-bold text-lg mb-6 tracking-wide">Headquarters</h4>
+          {/* Contact */}
+          <motion.div
+            variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
+            className="lg:col-span-3"
+          >
+            <h4 className="font-serif font-bold text-sm mb-6 uppercase tracking-[2px] text-[#c8a84b]">Headquarters</h4>
             <div className="space-y-4">
-              <div className="flex items-start gap-3 group">
-                <MapPin className="h-5 w-5 text-accent shrink-0 mt-0.5 group-hover:animate-bounce" />
-                <span className="text-sm text-primary-foreground/70">
+              <div className="flex items-start gap-3">
+                <MapPin className="h-4 w-4 text-[#4ade80] shrink-0 mt-0.5" />
+                <span className="text-sm text-[#f0ece4]/45 leading-relaxed">
                   IGO Corporate Block<br />Chennai, Tamil Nadu, India
                 </span>
               </div>
-              <div className="flex items-center gap-3 group">
-                <Phone className="h-5 w-5 text-accent shrink-0 group-hover:rotate-12 transition-transform" />
-                <span className="text-sm text-primary-foreground/70">+91 (044) 1234-5678</span>
+              <div className="flex items-center gap-3">
+                <Phone className="h-4 w-4 text-[#4ade80] shrink-0" />
+                <span className="text-sm text-[#f0ece4]/45">+91 (044) 1234-5678</span>
               </div>
-              <div className="flex items-center gap-3 group">
-                <Mail className="h-5 w-5 text-accent shrink-0 group-hover:scale-110 transition-transform" />
-                <span className="text-sm text-primary-foreground/70">contact@igogroup.com</span>
+              <div className="flex items-center gap-3">
+                <Mail className="h-4 w-4 text-[#4ade80] shrink-0" />
+                <span className="text-sm text-[#f0ece4]/45">contact@igogroup.com</span>
               </div>
             </div>
           </motion.div>
 
-          <motion.div variants={itemVariants} className="lg:col-span-3">
-            <h4 className="font-serif font-bold text-lg mb-6 tracking-wide">Stay Informed</h4>
-            <p className="text-sm text-primary-foreground/70 mb-4">
-              Insights and updates from across our 27+ brands.
+          {/* Newsletter */}
+          <motion.div
+            variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
+            className="lg:col-span-3"
+          >
+            <h4 className="font-serif font-bold text-sm mb-6 uppercase tracking-[2px] text-[#c8a84b]">Stay Informed</h4>
+            <p className="text-sm text-[#f0ece4]/40 mb-4 leading-relaxed">
+              Updates from across our 26 brands and 18 departments.
             </p>
-            <form className="flex flex-col space-y-3" onSubmit={(e) => { e.preventDefault(); /* simulate toast in real usage */ }}>
+            <form className="flex flex-col space-y-3" onSubmit={(e) => e.preventDefault()}>
               <div className="relative">
-                <Input 
-                  type="email" 
-                  placeholder="Email Address" 
-                  className="bg-primary-foreground/5 border-primary-foreground/10 text-primary-foreground placeholder:text-primary-foreground/40 h-12 pr-12 focus-visible:ring-accent rounded-xl"
+                <Input
+                  type="email"
+                  placeholder="Email Address"
                   required
+                  className="h-12 pr-14 focus-visible:ring-[#c8a84b] rounded-xl text-[#f0ece4] placeholder:text-[#f0ece4]/25"
+                  style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
                 />
-                <Button type="submit" size="icon" className="absolute right-1 top-1 bottom-1 h-10 w-10 rounded-lg bg-accent text-accent-foreground hover:bg-accent/90 transition-transform active:scale-95">
+                <Button
+                  type="submit"
+                  size="icon"
+                  aria-label="Subscribe to newsletter"
+                  className="absolute right-1 top-1 bottom-1 h-10 w-10 rounded-lg border-0 text-[#071a0e]"
+                  style={{ background: 'linear-gradient(135deg, #c8a84b, #f0d060, #a07820)' }}
+                >
                   <ArrowUp className="h-4 w-4 rotate-45" />
                 </Button>
               </div>
@@ -116,21 +153,25 @@ function Footer() {
           </motion.div>
         </div>
 
-        <motion.div variants={itemVariants} className="flex flex-col md:flex-row justify-between items-center gap-4 relative">
-          <p className="text-sm text-primary-foreground/50">
-            © {currentYear} IGO Group of Companies. All rights reserved.
+        {/* Bottom bar */}
+        <motion.div
+          variants={{ hidden: { opacity: 0 }, visible: { opacity: 1 } }}
+          className="flex flex-col md:flex-row justify-between items-center gap-4 relative"
+        >
+          <p className="text-sm text-[#f0ece4]/25">
+            © {year} IGO Group of Companies. All rights reserved.
           </p>
           <div className="flex gap-6">
-            <Link to="/contact" className="text-sm text-primary-foreground/50 hover:text-primary-foreground transition-colors">Privacy Policy</Link>
-            <Link to="/contact" className="text-sm text-primary-foreground/50 hover:text-primary-foreground transition-colors">Terms of Service</Link>
+            <Link to="/contact" className="text-sm text-[#f0ece4]/25 hover:text-[#f0ece4]/60 transition-colors">Privacy Policy</Link>
+            <Link to="/contact" className="text-sm text-[#f0ece4]/25 hover:text-[#f0ece4]/60 transition-colors">Terms of Service</Link>
           </div>
-          
-          <Button 
-            variant="outline" 
-            size="icon" 
+          <Button
+            variant="outline"
+            size="icon"
             onClick={scrollToTop}
-            className="absolute -top-16 right-0 rounded-full bg-accent/10 border-accent/20 text-accent hover:bg-accent hover:text-accent-foreground shadow-lg backdrop-blur-sm transition-all duration-300 hover:-translate-y-1"
             aria-label="Scroll to top"
+            className="absolute -top-16 right-0 rounded-full shadow-lg backdrop-blur-sm transition-all duration-300 hover:-translate-y-1"
+            style={{ borderColor: 'rgba(200,168,75,0.3)', color: '#c8a84b', background: 'rgba(200,168,75,0.08)' }}
           >
             <ArrowUp className="h-5 w-5" />
           </Button>

@@ -1,274 +1,395 @@
-
-import React from 'react';
+import React, { Suspense, lazy, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Building2, Globe, ShieldCheck, Sprout, ArrowRight, PlayCircle, BarChart3, Users } from 'lucide-react';
+import { ArrowRight, Sprout, BarChart3, ShieldCheck, Globe, Zap, Leaf } from 'lucide-react';
 import Header from '@/components/Header.jsx';
 import Footer from '@/components/Footer.jsx';
 import AnimatedCounter from '@/components/AnimatedCounter.jsx';
 import PageTransition from '@/components/PageTransition.jsx';
+import AgriSceneFallback from '@/components/AgriSceneFallback.jsx';
+import { departments } from '@/data/departments.js';
+
+const AgriScene = lazy(() => import('@/components/AgriScene.jsx'));
+
+function useWebGLSupport() {
+  const [supported, setSupported] = useState(false);
+  useEffect(() => {
+    try {
+      const canvas = document.createElement('canvas');
+      setSupported(!!(canvas.getContext('webgl') || canvas.getContext('experimental-webgl')));
+    } catch {
+      setSupported(false);
+    }
+  }, []);
+  return supported;
+}
+
+const bentoSectors = [
+  {
+    icon: Sprout,
+    label: 'Core Agri',
+    desc: 'Farm engineering, agritech automation, nursery, and precision produce distribution.',
+    accent: '#4ade80',
+    span: 'md:col-span-2 md:row-span-2',
+  },
+  {
+    icon: BarChart3,
+    label: 'Finance & Realty',
+    desc: 'Micro-finance, wealth management, farmland estates, and farm loans.',
+    accent: '#c8a84b',
+    span: '',
+  },
+  {
+    icon: ShieldCheck,
+    label: 'Health & Wellness',
+    desc: 'Holistic healthcare, Ayurveda pharmacy, and organic natural cosmetics.',
+    accent: '#87ceeb',
+    span: '',
+  },
+  {
+    icon: Zap,
+    label: 'Tech & Digital',
+    desc: 'IoT sensors, AI-driven automation, and the India Green App ecosystem.',
+    accent: '#a78bfa',
+    span: '',
+  },
+  {
+    icon: Globe,
+    label: 'Trade & Export',
+    desc: 'Premium agri export, international markets, and farm factory outputs.',
+    accent: '#fb923c',
+    span: '',
+  },
+];
+
+const stats = [
+  { value: 26, suffix: '', label: 'Active Brands' },
+  { value: 18, suffix: '', label: 'Departments' },
+  { value: 32, suffix: '', label: 'Core Managers' },
+  { value: 2000, suffix: '+', label: 'Global Staff' },
+];
 
 function HomePage() {
-  const { scrollY } = useScroll();
-  const yHero = useTransform(scrollY, [0, 1000], [0, 300]);
-  const opacityHero = useTransform(scrollY, [0, 500], [1, 0]);
+  const webglSupported = useWebGLSupport();
+  const prefersReduced = useReducedMotion();
+  const show3D = webglSupported && !prefersReduced;
 
-  const achievements = [
-    { icon: Building2, title: '27+ Active Brands', desc: 'Diversified across multiple high-growth sectors.' },
-    { icon: ShieldCheck, title: 'Quality Assured', desc: 'Rigorous standards in all our manufacturing and farming.' },
-    { icon: Globe, title: 'Global Reach', desc: 'Expanding our footprint across international markets.' },
-    { icon: Sprout, title: 'Sustainable', desc: 'Committed to environmental stewardship and clean energy.' }
-  ];
+  const { scrollY } = useScroll();
+  const yHero = useTransform(scrollY, [0, 800], [0, 180]);
+  const opacityHero = useTransform(scrollY, [0, 500], [1, 0]);
 
   return (
     <PageTransition>
       <Helmet>
-        <title>IGO Group of Companies - Built on Land. Driven by Purpose.</title>
-        <meta name="description" content="IGO Group is a premier enterprise conglomerate spanning agriculture, tech, retail, and more. Discover our 27+ brands." />
+        <title>IGO Group of Companies — Built on Land. Driven by Purpose.</title>
+        <meta
+          name="description"
+          content="IGO Group is a premier agricultural conglomerate with 26 brands, 18 departments, and 32 core managers spanning agri, tech, retail, and sustainability."
+        />
       </Helmet>
-
       <Header />
 
-      <main className="flex-1 bg-background">
-        {/* PREMIUM HERO SECTION WITH PARALLAX */}
-        <section className="relative min-h-[100dvh] flex items-center justify-center overflow-hidden">
-          <motion.div 
-            className="absolute inset-0 z-0"
-            style={{ y: yHero, opacity: opacityHero }}
-          >
-            <div
-              className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-              style={{
-                backgroundImage: `url('https://images.unsplash.com/photo-1564771789713-8586b829cbeb?q=80&w=2940&auto=format&fit=crop')`
-              }}
-            />
-            {/* Gradient Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-b from-primary/80 via-primary/60 to-background"></div>
-            <div className="absolute inset-0 opacity-[0.05] mix-blend-overlay pointer-events-none" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.8%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }}></div>
-          </motion.div>
+      <main className="flex-1" style={{ background: '#071a0e' }}>
 
-          <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 pt-20">
+        {/* ─── HERO ─── */}
+        <section className="relative min-h-[100dvh] flex items-center justify-center overflow-hidden">
+          {show3D ? (
+            <Suspense fallback={<AgriSceneFallback />}>
+              <AgriScene />
+            </Suspense>
+          ) : (
+            <AgriSceneFallback />
+          )}
+
+          {/* Vignette overlay */}
+          <div className="absolute inset-0 z-[1]" style={{ background: 'radial-gradient(ellipse at center, transparent 30%, rgba(7,26,14,0.6) 100%)' }} />
+
+          <motion.div
+            className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 pt-24"
+            style={prefersReduced ? {} : { y: yHero, opacity: opacityHero }}
+          >
             <div className="max-w-4xl mx-auto text-center">
+              {/* Badge */}
               <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
+                initial={{ opacity: 0, scale: 0.85 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass border border-white/20 text-white text-sm font-medium mb-8 shadow-xl"
+                className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full mb-10"
+                style={{ background: 'rgba(74,222,128,0.08)', border: '1px solid rgba(74,222,128,0.22)' }}
               >
-                <span className="w-2.5 h-2.5 rounded-full bg-secondary animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.8)]"></span>
-                Enterprise Conglomerate
+                <span
+                  className="w-2 h-2 rounded-full bg-[#4ade80]"
+                  style={{ boxShadow: '0 0 10px #4ade80, 0 0 20px rgba(74,222,128,0.4)', animation: 'pulse-glow 2s ease-in-out infinite' }}
+                />
+                <span className="text-xs font-bold tracking-[2.5px] uppercase text-[#86efac]">
+                  Premier Agricultural Conglomerate — Est. 2009
+                </span>
               </motion.div>
-              
-              <motion.h1 
-                initial={{ opacity: 0, y: 40 }}
+
+              {/* Title */}
+              <motion.h1
+                initial={{ opacity: 0, y: 55 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-                className="heading-hero text-white mb-6 drop-shadow-lg"
+                transition={{ duration: 0.9, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+                className="heading-hero text-[#f0ece4] mb-6"
+                style={{ textShadow: '0 4px 40px rgba(0,0,0,0.5)' }}
               >
-                Built on Land.<br/>
+                Built on Land.<br />
                 <span className="text-gradient-gold">Driven by Purpose.</span>
               </motion.h1>
-              
-              <motion.p 
+
+              {/* Subtitle */}
+              <motion.p
                 initial={{ opacity: 0, y: 40 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                className="text-xl md:text-2xl text-white/90 mb-12 max-w-3xl mx-auto leading-relaxed font-light"
+                transition={{ duration: 0.9, delay: 0.38, ease: [0.22, 1, 0.36, 1] }}
+                className="text-xl md:text-2xl mb-14 max-w-3xl mx-auto leading-relaxed font-light"
+                style={{ color: 'rgba(240,236,228,0.62)' }}
               >
-                Shaping the future through sustainable innovation across agriculture, technology, healthcare, and energy. Over 27 brands creating lasting global value.
+                26 brands across agriculture, technology, healthcare, finance, and sustainability —
+                creating lasting global value from the ground up.
               </motion.p>
-              
-              <motion.div 
-                initial={{ opacity: 0, y: 40 }}
+
+              {/* CTAs */}
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                transition={{ duration: 0.8, delay: 0.55, ease: [0.22, 1, 0.36, 1] }}
                 className="flex flex-col sm:flex-row gap-4 justify-center"
               >
-                <Button asChild size="lg" className="h-14 px-8 text-base shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all rounded-full bg-accent text-accent-foreground hover:bg-accent/90">
+                <Button
+                  asChild
+                  size="lg"
+                  className="h-14 px-8 text-base rounded-full border-0 font-bold shadow-2xl hover:opacity-90 hover:-translate-y-1 transition-all duration-300 text-[#071a0e]"
+                  style={{ background: 'linear-gradient(135deg, #c8a84b, #f0d060, #a07820)', boxShadow: '0 8px 32px rgba(200,168,75,0.35)' }}
+                >
                   <Link to="/brands">
                     Explore Ecosystem <ArrowRight className="ml-2 w-5 h-5" />
                   </Link>
                 </Button>
-                <Button asChild size="lg" variant="outline" className="h-14 px-8 text-base bg-white/10 border-white/20 text-white hover:bg-white/20 rounded-full backdrop-blur-md shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all">
+                <Button
+                  asChild
+                  size="lg"
+                  variant="outline"
+                  className="h-14 px-8 text-base rounded-full text-[#f0ece4] hover:-translate-y-1 transition-all duration-300 backdrop-blur-md"
+                  style={{ borderColor: 'rgba(255,255,255,0.15)', background: 'rgba(255,255,255,0.05)' }}
+                >
                   <Link to="/about">
-                    <PlayCircle className="mr-2 w-5 h-5" /> Our Vision
+                    <Leaf className="mr-2 w-5 h-5 text-[#4ade80]" /> Our Vision
                   </Link>
                 </Button>
               </motion.div>
             </div>
-          </div>
-          
-          {/* Scroll Indicator */}
-          <motion.div 
+          </motion.div>
+
+          {/* Scroll indicator */}
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 1.5, duration: 1 }}
-            className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/50"
+            transition={{ delay: 2.2, duration: 1 }}
+            className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+            style={{ color: 'rgba(240,236,228,0.3)' }}
           >
-            <span className="text-xs uppercase tracking-widest font-semibold">Scroll</span>
-            <div className="w-px h-12 bg-white/20 relative overflow-hidden">
-              <motion.div 
+            <span className="text-[10px] uppercase tracking-[4px] font-bold">Scroll</span>
+            <div className="w-px h-12 relative overflow-hidden" style={{ background: 'rgba(255,255,255,0.1)' }}>
+              <motion.div
                 animate={{ y: [0, 48, 0] }}
-                transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
-                className="w-full h-1/2 bg-white/80 absolute top-0"
+                transition={{ repeat: Infinity, duration: 2, ease: 'linear' }}
+                className="w-full h-1/2 absolute top-0"
+                style={{ background: 'rgba(74,222,128,0.7)' }}
               />
             </div>
           </motion.div>
         </section>
 
-        {/* ANIMATED STATS SECTION */}
-        <section className="relative z-20 -mt-16 mx-4 sm:mx-8">
-          <motion.div 
+        {/* ─── STATS BAR ─── */}
+        <section className="relative z-20 -mt-10 mx-4 sm:mx-8">
+          <motion.div
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-50px" }}
+            viewport={{ once: true, margin: '-50px' }}
             transition={{ duration: 0.6 }}
             className="container mx-auto glass-card rounded-3xl p-8 md:p-12"
           >
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 divide-x divide-border">
-              <div className="px-4 text-center">
-                <div className="text-4xl md:text-5xl font-serif font-bold text-foreground mb-2">
-                  <AnimatedCounter value={27} suffix="+" />
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8" style={{ borderRight: 'none' }}>
+              {stats.map((s, i) => (
+                <div
+                  key={i}
+                  className="px-4 text-center"
+                  style={{ borderRight: i < stats.length - 1 ? '1px solid rgba(255,255,255,0.06)' : 'none' }}
+                >
+                  <div className="font-serif font-bold mb-2 text-gradient-gold" style={{ fontSize: 'clamp(2rem, 4vw, 3rem)' }}>
+                    <AnimatedCounter value={s.value} suffix={s.suffix} />
+                  </div>
+                  <p className="text-xs font-bold uppercase tracking-[3px]" style={{ color: 'rgba(240,236,228,0.38)' }}>
+                    {s.label}
+                  </p>
                 </div>
-                <p className="text-sm font-medium text-muted-foreground uppercase tracking-widest">Active Brands</p>
-              </div>
-              <div className="px-4 text-center">
-                <div className="text-4xl md:text-5xl font-serif font-bold text-foreground mb-2">
-                  <AnimatedCounter value={18} />
-                </div>
-                <p className="text-sm font-medium text-muted-foreground uppercase tracking-widest">Departments</p>
-              </div>
-              <div className="px-4 text-center">
-                <div className="text-4xl md:text-5xl font-serif font-bold text-foreground mb-2">
-                  <AnimatedCounter value={2000} suffix="+" />
-                </div>
-                <p className="text-sm font-medium text-muted-foreground uppercase tracking-widest">Global Staff</p>
-              </div>
-              <div className="px-4 text-center">
-                <div className="text-4xl md:text-5xl font-serif font-bold text-foreground mb-2">
-                  <AnimatedCounter value={15} suffix="+" />
-                </div>
-                <p className="text-sm font-medium text-muted-foreground uppercase tracking-widest">Years Legacy</p>
-              </div>
+              ))}
             </div>
           </motion.div>
         </section>
 
-        {/* KEY ACHIEVEMENTS */}
-        <section className="py-32 bg-background relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-secondary/5 rounded-full blur-[100px] -z-10 translate-x-1/3 -translate-y-1/4"></div>
-          
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <motion.div 
+        {/* ─── BENTO SECTORS ─── */}
+        <section className="py-32 relative overflow-hidden">
+          <div
+            className="liquid-blob absolute pointer-events-none"
+            style={{ width: '700px', height: '700px', background: 'radial-gradient(ellipse, rgba(74,222,128,0.05), transparent)', top: '-100px', right: '-150px' }}
+          />
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               className="text-center max-w-3xl mx-auto mb-20"
             >
-              <h2 className="heading-section mb-6">Strategic Excellence</h2>
-              <p className="text-xl text-muted-foreground">
-                Our operational framework is engineered to deliver uncompromised quality, sustainable growth, and generational value.
+              <p className="text-xs font-bold tracking-[3px] uppercase mb-4" style={{ color: '#4ade80' }}>Brand Ecosystem</p>
+              <h2 className="heading-section text-[#f0ece4] mb-6">A Powerful Brand Ecosystem</h2>
+              <p className="text-xl font-light leading-relaxed" style={{ color: 'rgba(240,236,228,0.5)' }}>
+                From precision agritech to sustainable energy — 26 brands engineered to build synergistic value across India and beyond.
               </p>
             </motion.div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {achievements.map((item, idx) => {
-                const Icon = item.icon;
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5 auto-rows-[200px]">
+              {bentoSectors.map((sector, i) => {
+                const Icon = sector.icon;
                 return (
                   <motion.div
-                    key={idx}
-                    initial={{ opacity: 0, y: 30 }}
+                    key={i}
+                    initial={{ opacity: 0, y: 25 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    transition={{ delay: idx * 0.1, duration: 0.6, ease: "easeOut" }}
+                    transition={{ delay: i * 0.08, duration: 0.5 }}
+                    className={`${sector.span} group relative rounded-3xl overflow-hidden p-8 flex flex-col justify-end cursor-pointer card-glow`}
+                    style={{ background: '#0d2618', border: '1px solid rgba(255,255,255,0.06)' }}
                   >
-                    <Card className="h-full bg-card hover:bg-muted/50 transition-all duration-500 border-border shadow-lg hover:shadow-xl hover:-translate-y-2 group rounded-3xl overflow-hidden">
-                      <CardContent className="p-8 text-center flex flex-col items-center">
-                        <div className="w-20 h-20 rounded-2xl bg-secondary/10 flex items-center justify-center mb-8 group-hover:scale-110 group-hover:bg-secondary/20 transition-all duration-500">
-                          <Icon className="w-10 h-10 text-secondary" />
-                        </div>
-                        <h3 className="font-serif text-2xl font-bold mb-4">{item.title}</h3>
-                        <p className="text-muted-foreground leading-relaxed">{item.desc}</p>
-                      </CardContent>
-                    </Card>
+                    <div
+                      className="liquid-blob absolute pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-700"
+                      style={{ width: '220px', height: '220px', background: `radial-gradient(circle, ${sector.accent}14, transparent)`, top: '-60px', right: '-60px' }}
+                    />
+                    <Icon
+                      className="mb-4 transition-all duration-500 group-hover:-translate-y-1.5"
+                      style={{ color: sector.accent, width: '2.25rem', height: '2.25rem' }}
+                    />
+                    <h3 className="font-serif text-xl font-bold text-[#f0ece4] mb-2">{sector.label}</h3>
+                    <p className="text-sm leading-relaxed line-clamp-2" style={{ color: 'rgba(240,236,228,0.45)' }}>
+                      {sector.desc}
+                    </p>
                   </motion.div>
-                )
+                );
               })}
             </div>
+
+            <div className="text-center mt-12">
+              <Button
+                asChild
+                size="lg"
+                className="rounded-full font-bold border-0 shadow-xl px-8 hover:opacity-90 hover:-translate-y-1 transition-all duration-300 text-[#071a0e]"
+                style={{ background: 'linear-gradient(135deg, #c8a84b, #f0d060, #a07820)' }}
+              >
+                <Link to="/brands">View All 26 Brands <ArrowRight className="ml-2 w-4 h-4" /></Link>
+              </Button>
+            </div>
           </div>
         </section>
 
-        {/* BENTO GRID - ECOSYSTEM PREVIEW */}
-        <section className="py-32 bg-primary text-primary-foreground rounded-t-[3rem] shadow-[0_-20px_50px_rgba(0,0,0,0.1)] relative z-20">
+        {/* ─── DEPARTMENTS STRIP ─── */}
+        <section className="py-20 overflow-hidden" style={{ background: '#0d2618', borderTop: '1px solid rgba(255,255,255,0.06)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex flex-col lg:flex-row justify-between items-end mb-16 gap-8">
-              <motion.div 
-                initial={{ opacity: 0, x: -30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                className="max-w-2xl"
-              >
-                <h2 className="heading-section mb-6">A Powerful Brand Ecosystem</h2>
-                <p className="text-xl text-primary-foreground/80 font-light">
-                  From advanced agritech and precision farming to holistic healthcare and fintech, our portfolio is meticulously structured to build synergistic value.
-                </p>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, x: 30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-              >
-                <Button asChild size="lg" className="rounded-full bg-accent text-accent-foreground hover:bg-accent/90 shadow-xl">
-                  <Link to="/brands">View Full Directory</Link>
-                </Button>
-              </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center mb-12"
+            >
+              <p className="text-xs font-bold tracking-[3px] uppercase mb-3" style={{ color: '#4ade80' }}>Operational Core</p>
+              <h2 className="heading-section text-[#f0ece4]">18 Departments</h2>
+            </motion.div>
+            <div className="flex flex-wrap justify-center gap-3">
+              {departments.map((dept, i) => (
+                <motion.div
+                  key={dept.id}
+                  initial={{ opacity: 0, scale: 0.85 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.03 }}
+                >
+                  <Link
+                    to="/departments"
+                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-semibold transition-all duration-300"
+                    style={{
+                      background: 'rgba(255,255,255,0.04)',
+                      border: '1px solid rgba(255,255,255,0.08)',
+                      color: 'rgba(240,236,228,0.55)',
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.background = 'rgba(74,222,128,0.1)'; e.currentTarget.style.borderColor = 'rgba(74,222,128,0.3)'; e.currentTarget.style.color = '#4ade80'; }}
+                    onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'; e.currentTarget.style.color = 'rgba(240,236,228,0.55)'; }}
+                  >
+                    <span>{dept.icon}</span> {dept.name}
+                  </Link>
+                </motion.div>
+              ))}
             </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[250px]">
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="md:col-span-2 md:row-span-2 bg-gradient-to-br from-secondary/40 to-primary p-10 rounded-3xl border border-white/10 relative overflow-hidden group"
+            <div className="text-center mt-10">
+              <Button
+                asChild
+                variant="outline"
+                className="rounded-full transition-all duration-200"
+                style={{ borderColor: 'rgba(255,255,255,0.12)', color: 'rgba(240,236,228,0.55)', background: 'transparent' }}
               >
-                <div className="absolute top-0 right-0 w-64 h-64 bg-secondary/30 rounded-full blur-[80px] group-hover:scale-150 transition-transform duration-1000"></div>
-                <div className="relative z-10 h-full flex flex-col justify-end">
-                  <Sprout className="w-12 h-12 text-accent mb-6" />
-                  <h3 className="font-serif text-4xl font-bold mb-4">Core Agri & Tech</h3>
-                  <p className="text-lg text-primary-foreground/80 max-w-md">Leading farm engineering, automation, and produce distribution under brands like IGO Agritech Farms.</p>
-                </div>
-              </motion.div>
-              
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.1 }}
-                className="bg-white/5 backdrop-blur-md p-8 rounded-3xl border border-white/10 hover:bg-white/10 transition-colors flex flex-col justify-end group"
-              >
-                <BarChart3 className="w-10 h-10 text-accent mb-4 group-hover:-translate-y-2 transition-transform" />
-                <h3 className="font-serif text-2xl font-bold mb-2">Finance & Realty</h3>
-                <p className="text-sm text-primary-foreground/70">Micro-finance, wealth management, and premium farmlands.</p>
-              </motion.div>
-              
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.2 }}
-                className="bg-white/5 backdrop-blur-md p-8 rounded-3xl border border-white/10 hover:bg-white/10 transition-colors flex flex-col justify-end group"
-              >
-                <ShieldCheck className="w-10 h-10 text-accent mb-4 group-hover:-translate-y-2 transition-transform" />
-                <h3 className="font-serif text-2xl font-bold mb-2">Health & Wellness</h3>
-                <p className="text-sm text-primary-foreground/70">Holistic healthcare, natural cosmetics, and organic pharmacy.</p>
-              </motion.div>
+                <Link to="/departments">
+                  Explore All Departments <ArrowRight className="ml-2 w-4 h-4" />
+                </Link>
+              </Button>
             </div>
           </div>
         </section>
 
+        {/* ─── CTA BANNER ─── */}
+        <section className="py-36 relative overflow-hidden">
+          <div
+            className="liquid-blob absolute pointer-events-none"
+            style={{ width: '900px', height: '900px', background: 'radial-gradient(ellipse, rgba(200,168,75,0.05), transparent)', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}
+          />
+          <div className="terrain-grid absolute inset-0 opacity-40" />
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="max-w-3xl mx-auto text-center"
+            >
+              <p className="text-xs font-bold tracking-[3px] uppercase mb-4" style={{ color: '#c8a84b' }}>Partner With Us</p>
+              <h2 className="heading-section text-[#f0ece4] mb-6">Ready to Grow Together?</h2>
+              <p className="text-xl font-light mb-14 leading-relaxed" style={{ color: 'rgba(240,236,228,0.5)' }}>
+                Franchise opportunities, investment partnerships, and strategic alliances available across all 26 brands.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button
+                  asChild
+                  size="lg"
+                  className="h-14 px-10 rounded-full border-0 font-bold text-base shadow-2xl hover:opacity-90 hover:-translate-y-1 transition-all duration-300 text-[#071a0e]"
+                  style={{ background: 'linear-gradient(135deg, #c8a84b, #f0d060, #a07820)', boxShadow: '0 8px 32px rgba(200,168,75,0.3)' }}
+                >
+                  <Link to="/contact">
+                    Get In Touch <ArrowRight className="ml-2 w-5 h-5" />
+                  </Link>
+                </Button>
+                <Button
+                  asChild
+                  size="lg"
+                  variant="outline"
+                  className="h-14 px-10 rounded-full text-base hover:-translate-y-1 transition-all duration-300"
+                  style={{ borderColor: 'rgba(255,255,255,0.12)', color: 'rgba(240,236,228,0.65)', background: 'rgba(255,255,255,0.04)' }}
+                >
+                  <Link to="/brands">Browse Brands</Link>
+                </Button>
+              </div>
+            </motion.div>
+          </div>
+        </section>
       </main>
 
       <Footer />
