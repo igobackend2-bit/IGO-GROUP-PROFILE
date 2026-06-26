@@ -13,6 +13,25 @@ import { departments } from '@/data/departments.js';
 
 const AgriScene = lazy(() => import('@/components/AgriScene.jsx'));
 
+class SceneErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return this.props.fallback;
+    }
+
+    return this.props.children;
+  }
+}
+
 function useWebGLSupport() {
   const [supported, setSupported] = useState(false);
   useEffect(() => {
@@ -96,9 +115,11 @@ function HomePage() {
         {/* ─── HERO ─── */}
         <section className="relative min-h-[100dvh] flex items-center justify-center overflow-hidden">
           {show3D ? (
-            <Suspense fallback={<AgriSceneFallback />}>
-              <AgriScene />
-            </Suspense>
+            <SceneErrorBoundary fallback={<AgriSceneFallback />}>
+              <Suspense fallback={<AgriSceneFallback />}>
+                <AgriScene />
+              </Suspense>
+            </SceneErrorBoundary>
           ) : (
             <AgriSceneFallback />
           )}
