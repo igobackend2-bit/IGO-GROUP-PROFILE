@@ -145,7 +145,7 @@ function HomePage() {
                   style={{ boxShadow: '0 0 10px #4ade80, 0 0 20px rgba(74,222,128,0.4)', animation: 'pulse-glow 2s ease-in-out infinite' }}
                 />
                 <span className="text-xs font-bold tracking-[2.5px] uppercase text-[#86efac]">
-                  Premier Agricultural Conglomerate — Est. 2009
+                  Premier Farming Conglomerate — Est. 2016
                 </span>
               </motion.div>
 

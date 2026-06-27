@@ -16,11 +16,11 @@ const values = [
 ];
 
 const milestones = [
-  { year: '2009', event: 'IGO Group founded with a singular vision for sustainable, enterprise-scale agriculture.' },
-  { year: '2012', event: 'Launched IGO Agritech Farms — the first brand under the conglomerate umbrella.' },
-  { year: '2015', event: 'Expanded to 10 brands across Core Agri and Retail & Food sectors.' },
-  { year: '2018', event: 'Launched the Tech & Digital vertical including IGO Farm Automation and IoT systems.' },
-  { year: '2021', event: 'Crossed 2,000 employees globally across 20+ brands and 15 operational departments.' },
+  { year: '2016', event: 'IGO Group founded with a singular vision for sustainable, enterprise-scale farming.' },
+  { year: '2017', event: 'Launched IGO Agritech Farms — the first brand under the conglomerate umbrella.' },
+  { year: '2019', event: 'Expanded to 10 brands across Core Agri and Retail & Food sectors.' },
+  { year: '2020', event: 'Launched the Tech & Digital vertical including IGO Farm Automation and IoT systems.' },
+  { year: '2022', event: 'Crossed 2,000 employees globally across 20+ brands and 15 operational departments.' },
   { year: '2023', event: 'Launched Farmgate Mandi — digital farm gate buyback platform for transparent market access.' },
   { year: '2024', event: 'India Green App launched as the central digital hub for the entire ecosystem.' },
   { year: '2025', event: '26 active and upcoming brands. 18 departments. 32 core managers. Global expansion underway.' },
@@ -52,9 +52,9 @@ function AboutPage() {
               className="max-w-4xl"
             >
               <p className="text-xs font-bold tracking-[3px] uppercase mb-4" style={{ color: '#4ade80' }}>Our Legacy</p>
-              <h1 className="heading-hero text-[#f0ece4] mb-6">15+ Years of Purpose</h1>
+              <h1 className="heading-hero text-[#f0ece4] mb-6">10+ Years of Purpose</h1>
               <p className="text-xl font-light leading-relaxed max-w-2xl" style={{ color: 'rgba(240,236,228,0.52)' }}>
-                From a single vision for sustainable agriculture to a conglomerate of 26 brands — IGO Group has redefined enterprise-scale farming for the 21st century.
+                From a single vision for sustainable farming to a conglomerate of 26 brands — IGO Group has redefined enterprise-scale farming for the 21st century.
               </p>
             </motion.div>
           </div>

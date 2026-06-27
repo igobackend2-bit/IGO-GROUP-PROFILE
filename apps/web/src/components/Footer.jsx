@@ -41,16 +41,17 @@ function Footer() {
             variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
             className="lg:col-span-4 space-y-6"
           >
-            <Link to="/" className="flex items-center space-x-3">
+            <Link to="/" className="flex items-center">
               <div
-                className="w-10 h-10 rounded-xl flex items-center justify-center font-serif font-black text-lg shadow-lg"
-                style={{ background: 'linear-gradient(135deg, #c8a84b, #f0d060, #a07820)', color: '#071a0e' }}
+                className="rounded-xl overflow-hidden shadow-lg"
+                style={{ border: '1px solid rgba(200,168,75,0.25)', background: '#fff' }}
               >
-                I
-              </div>
-              <div>
-                <div className="text-xl font-serif font-bold text-[#f0ece4]">IGO Group</div>
-                <div className="text-[10px] font-bold tracking-[3px] uppercase text-[#4ade80]">of Companies</div>
+                <img
+                  src="/logos/igo-group.jpg"
+                  alt="IGO Group"
+                  className="h-10 w-auto object-contain block"
+                  style={{ maxWidth: '140px' }}
+                />
               </div>
             </Link>
             <p className="text-sm text-[#f0ece4]/45 leading-relaxed max-w-xs">

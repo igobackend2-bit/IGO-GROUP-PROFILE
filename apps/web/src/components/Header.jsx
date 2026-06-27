@@ -46,16 +46,17 @@ function Header() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-3 group z-50">
+          <Link to="/" className="flex items-center group z-50">
             <div
-              className="w-10 h-10 rounded-xl flex items-center justify-center font-serif font-black text-lg shadow-lg group-hover:scale-110 transition-transform duration-300"
-              style={{ background: 'linear-gradient(135deg, #c8a84b, #f0d060, #a07820)', color: '#071a0e' }}
+              className="rounded-xl overflow-hidden shadow-lg group-hover:scale-105 transition-transform duration-300"
+              style={{ border: '1px solid rgba(200,168,75,0.25)', background: '#fff' }}
             >
-              I
-            </div>
-            <div className="flex flex-col leading-none">
-              <span className="text-xl font-serif font-bold text-[#f0ece4] tracking-tight">IGO Group</span>
-              <span className="text-[10px] font-bold tracking-[3px] uppercase text-[#4ade80]">of Companies</span>
+              <img
+                src="/logos/igo-group.jpg"
+                alt="IGO Group — India's Leading Farming Conglomerate"
+                className="h-10 w-auto object-contain block"
+                style={{ maxWidth: '140px' }}
+              />
             </div>
           </Link>
 
